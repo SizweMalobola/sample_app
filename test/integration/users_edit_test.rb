@@ -15,4 +15,18 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     assert_template 'users/edit'
     assert_select 'div.alert', 'The form contains 4 errors.'
   end
+
+  test 'successful edit' do
+    get edit_user_path(@user)
+    assert_template 'users/edit'
+    patch user_path(@user), params: { user: { name: 'Foo Bar',
+                                              email: 'foo@bar.com',
+                                              password: '',
+                                              password_confirmation: ''}}
+    assert_not flash.empty?
+    assert_redirected_to @user
+    @user.reload
+    assert_equal 'Foo Bar', @user.name
+    assert_equal 'foo@bar.com', @user.email
+  end
 end
